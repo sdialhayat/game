@@ -580,18 +580,21 @@
     });
   }
 
-  function checkAnswer(player, selected, correct) {
+function checkAnswer(player, selected, correct) {
     let pData = player === 1 ? p1 : p2;
     
+    // Cek apakah jawaban benar atau salah dan catat skornya
     if (selected === correct) {
       pData.score += 10;
       pData.correct++;
-      pData.index++; 
-      loadQuestion(player);
     } else {
       pData.score -= 5;
       pData.wrong++;
     }
+    
+    // Apapun jawabannya (benar/salah), langsung ganti ke soal berikutnya
+    pData.index++; 
+    loadQuestion(player);
   }
 
   function skipQuestion(player) {
