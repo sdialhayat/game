@@ -350,6 +350,29 @@
     .welcome-text { display: none; }
     .btn-play { font-size: 18px; padding: 10px 30px; }
   }
+  
+  /* --- ANIMASI NOTIFIKASI LUCU --- */
+  .notif-lucu {
+    position: absolute;
+    top: 40%;
+    font-size: 55px;
+    font-weight: bold;
+    text-shadow: 3px 3px 10px rgba(0,0,0,0.6), -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+    pointer-events: none; /* Agar tidak menghalangi klik */
+    z-index: 100;
+    animation: melayang 1s ease-out forwards;
+    text-align: center;
+  }
+
+  @keyframes melayang {
+    0% { transform: translateY(0) scale(0.5); opacity: 0; }
+    20% { transform: translateY(-20px) scale(1.2); opacity: 1; }
+    80% { transform: translateY(-80px) scale(1); opacity: 1; }
+    100% { transform: translateY(-120px) scale(0.8); opacity: 0; }
+  }
+  
+  
+  
 </style>
 
 <!-- PWA Meta Tags -->
@@ -417,19 +440,20 @@
   <div class="results-container">
     <div class="result-card">
       <h2 style="font-size: 24px; margin-top: 0; margin-bottom: 10px;">Player 1</h2>
+      <h3 style="font-size: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px; margin-top: 0; margin-bottom: 10px;">Soal Dijawab: <span id="cur-p1-dijawab">0</span></h3>
       <p style="font-size: 18px; margin: 5px 0; color: green; font-weight: bold;">Benar: <span id="cur-p1-benar">0</span></p>
       <p style="font-size: 18px; margin: 5px 0; color: red; font-weight: bold;">Salah: <span id="cur-p1-salah">0</span></p>
-      <h3 style="font-size: 24px; border-top: 2px solid #ccc; padding-top: 10px; margin-bottom: 0; margin-top: 10px;">Total: <span id="cur-p1-skor">0</span></h3>
     </div>
     <div class="result-card">
       <h2 style="font-size: 24px; margin-top: 0; margin-bottom: 10px;">Player 2</h2>
+      <h3 style="font-size: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px; margin-top: 0; margin-bottom: 10px;">Soal Dijawab: <span id="cur-p2-dijawab">0</span></h3>
       <p style="font-size: 18px; margin: 5px 0; color: green; font-weight: bold;">Benar: <span id="cur-p2-benar">0</span></p>
       <p style="font-size: 18px; margin: 5px 0; color: red; font-weight: bold;">Salah: <span id="cur-p2-salah">0</span></p>
-      <h3 style="font-size: 24px; border-top: 2px solid #ccc; padding-top: 10px; margin-bottom: 0; margin-top: 10px;">Total: <span id="cur-p2-skor">0</span></h3>
     </div>
   </div>
   <button class="btn-tutup" onclick="tutupSkor()">Tutup & Lanjut Main</button>
 </div>
+
 
 <!-- Popup Hasil Akhir -->
 <div id="result-screen" class="modal-screen">
@@ -439,15 +463,15 @@
   <div class="results-container">
     <div class="result-card">
       <h2 style="font-size: 24px; margin-top: 0; margin-bottom: 10px;">Player 1</h2>
+      <h3 style="font-size: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px; margin-top: 0; margin-bottom: 10px;">Soal Dijawab: <span id="p1-dijawab">0</span></h3>
       <p style="font-size: 18px; margin: 5px 0; color: green; font-weight: bold;">Benar: <span id="p1-benar">0</span></p>
       <p style="font-size: 18px; margin: 5px 0; color: red; font-weight: bold;">Salah: <span id="p1-salah">0</span></p>
-      <h3 style="font-size: 26px; border-top: 2px solid #ccc; padding-top: 10px; margin-bottom: 0; margin-top: 10px;">Skor: <span id="p1-final">0</span></h3>
     </div>
     <div class="result-card">
       <h2 style="font-size: 24px; margin-top: 0; margin-bottom: 10px;">Player 2</h2>
+      <h3 style="font-size: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px; margin-top: 0; margin-bottom: 10px;">Soal Dijawab: <span id="p2-dijawab">0</span></h3>
       <p style="font-size: 18px; margin: 5px 0; color: green; font-weight: bold;">Benar: <span id="p2-benar">0</span></p>
       <p style="font-size: 18px; margin: 5px 0; color: red; font-weight: bold;">Salah: <span id="p2-salah">0</span></p>
-      <h3 style="font-size: 26px; border-top: 2px solid #ccc; padding-top: 10px; margin-bottom: 0; margin-top: 10px;">Skor: <span id="p2-final">0</span></h3>
     </div>
   </div>
   <button class="restart" onclick="startGame()">Main Lagi</button>
@@ -579,12 +603,45 @@
       optsDiv.appendChild(btn);
     });
   }
+  
+  
+  function munculkanNotifLucu(player, isCorrect) {
+    // Tentukan area pemain mana yang diklik
+    let zone = document.getElementById(player === 1 ? 'p1-zone' : 'p2-zone');
+    
+    // Buat elemen teks baru
+    let notif = document.createElement('div');
+    notif.className = 'notif-lucu';
+    
+    // Daftar kata-kata lucu
+    if (isCorrect) {
+      const pesanBenar = ["🤩 Yeyyy!", "🔥 Mantul!", "🎉 Gacor!", "😎 Jenius!", "🚀 Wuzzz!"];
+      notif.innerText = pesanBenar[Math.floor(Math.random() * pesanBenar.length)];
+      notif.style.color = "#4CAF50"; // Warna hijau
+    } else {
+      const pesanSalah = ["🙈 Waduh!", "🤪 Ngawur!", "😅 Hayoloh!", "🥴 Yhaa..", "💨 Meleset!"];
+      notif.innerText = pesanSalah[Math.floor(Math.random() * pesanSalah.length)];
+      notif.style.color = "#ff4d4d"; // Warna merah
+    }
+
+    // Masukkan ke dalam area pemain
+    zone.appendChild(notif);
+
+    // Hapus elemen setelah 1 detik (sesuai durasi animasi)
+    setTimeout(() => {
+      notif.remove();
+    }, 1000);
+  }
 
 function checkAnswer(player, selected, correct) {
     let pData = player === 1 ? p1 : p2;
+    let isCorrect = (selected === correct);
+    
+    // Panggil efek animasi lucu melayang
+    munculkanNotifLucu(player, isCorrect);
     
     // Cek apakah jawaban benar atau salah dan catat skornya
-    if (selected === correct) {
+    if (isCorrect) {
       pData.score += 10;
       pData.correct++;
     } else {
@@ -605,14 +662,20 @@ function checkAnswer(player, selected, correct) {
     }
   }
 
-  function tampilkanSkorSaatIni() {
+function tampilkanSkorSaatIni() {
+    // Hitung total soal yang sudah dijawab
+    let p1Dijawab = p1.correct + p1.wrong;
+    let p2Dijawab = p2.correct + p2.wrong;
+
+    // Tampilkan untuk Player 1
+    document.getElementById('cur-p1-dijawab').innerText = p1Dijawab;
     document.getElementById('cur-p1-benar').innerText = p1.correct;
     document.getElementById('cur-p1-salah').innerText = p1.wrong;
-    document.getElementById('cur-p1-skor').innerText = p1.score;
 
+    // Tampilkan untuk Player 2
+    document.getElementById('cur-p2-dijawab').innerText = p2Dijawab;
     document.getElementById('cur-p2-benar').innerText = p2.correct;
     document.getElementById('cur-p2-salah').innerText = p2.wrong;
-    document.getElementById('cur-p2-skor').innerText = p2.score;
 
     document.getElementById('skor-sementara-screen').style.display = 'flex';
   }
@@ -627,7 +690,7 @@ function checkAnswer(player, selected, correct) {
     }
   }
 
-  function endGame() {
+function endGame() {
     stopTimer();
     let finalTime = updateTimerDisplay();
     document.getElementById('final-time-text').innerText = finalTime;
@@ -635,13 +698,18 @@ function checkAnswer(player, selected, correct) {
     document.getElementById('welcome-screen').style.display = 'none';
     document.getElementById('result-screen').style.display = 'flex';
 
+    let p1Dijawab = p1.correct + p1.wrong;
+    let p2Dijawab = p2.correct + p2.wrong;
+
+    // Final Player 1
+    document.getElementById('p1-dijawab').innerText = p1Dijawab;
     document.getElementById('p1-benar').innerText = p1.correct;
     document.getElementById('p1-salah').innerText = p1.wrong;
-    document.getElementById('p1-final').innerText = p1.score;
 
+    // Final Player 2
+    document.getElementById('p2-dijawab').innerText = p2Dijawab;
     document.getElementById('p2-benar').innerText = p2.correct;
     document.getElementById('p2-salah').innerText = p2.wrong;
-    document.getElementById('p2-final').innerText = p2.score;
   }
 
   startGame();
