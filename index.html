@@ -3,7 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<!-- --- META TAGS DASAR --- -->
 <title>Game Matematika 2 Player</title>
+<meta name="description" content="Game edukasi Cerdas Cermat Matematika seru untuk 2 pemain. Ayo adu kecepatan dan ketepatan berhitung!">
+
+<!-- --- FAVICON & ICON --- -->
+<link rel="icon" type="image/png" href="icons/icon-192x192.png">
+<link rel="apple-touch-icon" href="icons/icon-192x192.png">
+
+<!-- --- OPEN GRAPH (UNTUK SHARE WA / SOSMED) --- -->
+<meta property="og:title" content="ALHAYAT PINTAR! Game Matematika 2 Player">
+<meta property="og:description" content="Ayo adu kecepatan dan ketepatan berhitung bersama temanmu. Mainkan secara gratis!">
+<meta property="og:image" content="icons/icon-192x192.png">
+<meta property="og:type" content="website">
+
+<!-- --- PWA Meta Tags --- -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#26543b">
+
 <style>
   /* --- PENGATURAN DASAR --- */
   html, body { 
@@ -173,9 +191,8 @@
     box-shadow: 0 0 0; 
   }
 
-  /* --- TOMBOL LEWATI SOAL (JARAK DIPERBESAR) --- */
   .btn-next { 
-    margin-top: 80px; /* Jarak untuk Laptop/Desktop sangat lega */
+    margin-top: 80px; 
     padding: 10px 30px; 
     font-size: 16px; 
     font-weight: 600;
@@ -213,7 +230,8 @@
     justify-content: center;
     z-index: 25; 
     text-align: center;
-    padding: 20px;
+    /* Tambahan padding bottom agar dev-link tidak bertabrakan jika di-scroll */
+    padding: 20px 20px 60px 20px; 
     box-sizing: border-box;
     color: white;
     overflow-y: auto;
@@ -253,6 +271,42 @@
   .btn-play:active {
     transform: translateY(8px);
     box-shadow: 0 0 0;
+  }
+
+  /* --- LINK TIKTOK DEVELOPER (KECIL, MUNGIL, DAN MENEMPEL DI BAWAH) --- */
+  .dev-link {
+    position: absolute; /* Diposisikan mutlak terhadap layar sambutan */
+    bottom: 20px; /* Selalu 20px dari tepi bawah layar */
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 6px 15px;
+    font-size: 12px;
+    color: #e8f5e9;
+    text-decoration: none;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    white-space: nowrap; /* Memaksa teks jadi satu baris menyamping */
+    z-index: 10;
+  }
+  .dev-link strong {
+    color: #e09f3e; 
+    font-size: 13px;
+    font-weight: 700;
+    text-shadow: 0 0 5px rgba(224, 159, 62, 0.5);
+    margin-left: 4px; /* Spasi antar kata */
+  }
+  .dev-link:hover {
+    background: rgba(0, 0, 0, 0.7);
+    border-color: #e09f3e;
+    color: #fff;
+    /* TranslateX(-50%) dipertahankan agar tetap di tengah saat dinaikkan */
+    transform: translateX(-50%) translateY(-3px); 
+    box-shadow: 0 5px 15px rgba(224, 159, 62, 0.4); 
   }
 
   /* --- LAYAR POPUP SKOR & HASIL AKHIR --- */
@@ -348,8 +402,7 @@
     .btn-option { font-size: 24px; padding: 10px 18px; border-radius: 10px; box-shadow: 0 4px 0 #9c6f2a;}
     .btn-option:active { transform: translateY(4px); box-shadow: 0 0 0; }
     
-    /* Jarak Tombol Lewati untuk Layar Sedang/HP */
-    .btn-next { font-size: 13px; padding: 8px 25px; margin-top: 55px; } 
+    .btn-next { font-size: 13px; padding: 8px 25px; margin-top: 35px; } 
     
     .player-zone:first-child { border-right: 8px solid #5c3a21; }
 
@@ -357,6 +410,11 @@
     .welcome-subtitle { font-size: 24px; margin-bottom: 10px;}
     .welcome-text { font-size: 16px; margin-bottom: 20px; max-width: 90%; display: block; }
     .btn-play { font-size: 22px; padding: 10px 40px; border-width: 3px; }
+    
+    /* Responsive Lencana Dev Mungil di HP */
+    .dev-link { bottom: 12px; padding: 4px 12px; font-size: 10px; }
+    .dev-link strong { font-size: 11px; }
+    #welcome-screen { padding-bottom: 45px; }
   }
   
   @media screen and (max-height: 400px), screen and (max-width: 450px) and (orientation: portrait) {
@@ -364,29 +422,20 @@
     .btn-option { font-size: 20px; padding: 8px 15px; box-shadow: 0 3px 0 #9c6f2a;}
     .options { gap: 10px; }
     
-    /* Jarak Tombol Lewati untuk Layar HP yang Sangat Sempit */
-    .btn-next { margin-top: 40px; font-size: 12px; padding: 6px 20px;}
+    .btn-next { margin-top: 25px; font-size: 12px; padding: 6px 20px;}
 
     .welcome-title { font-size: 30px; margin-bottom: 5px;}
     .welcome-subtitle { font-size: 18px; margin-bottom: 5px;}
-    
-    /* Memastikan Teks Deskripsi Muncul dan Rapih di HP */
-    .welcome-text { 
-        display: block; 
-        font-size: 14px; 
-        line-height: 1.4; 
-        margin-bottom: 15px; 
-        padding: 0 10px;
-    }
+    .welcome-text { display: block; font-size: 13px; line-height: 1.3; margin-bottom: 15px; padding: 0 10px; }
     .btn-play { font-size: 18px; padding: 8px 25px; border-width: 2px;}
+    
+    /* Responsive Lencana Dev Mungil di HP Sangat Kecil */
+    .dev-link { bottom: 8px; padding: 4px 10px; font-size: 9px; }
+    .dev-link strong { font-size: 10px; }
+    #welcome-screen { padding-bottom: 35px; }
   }
   
 </style>
-
-<!-- PWA Meta Tags -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#26543b">
-<link rel="apple-touch-icon" href="icon-192x192.png">
 
 </head>
 <body>
@@ -409,6 +458,12 @@
       
       <button id="btn-install" style="display: none; padding: 15px 30px; font-size: 25px; font-weight: bold; background-color: #008CBA; color: white; border: 4px solid #fff; border-radius: 20px; cursor: pointer; box-shadow: 0 8px 0 #005f7a; transition: 0.1s;">📲 Instal Game!</button>
     </div>
+
+    <!-- LINK TIKTOK DEVELOPER KECIL, MUNGIL, DAN MENEMPEL DI BAWAH -->
+    <a href="https://www.tiktok.com/@aromkobama" target="_blank" class="dev-link">
+      Development <strong>Arom Kobama 😎</strong>
+    </a>
+
   </div>
 
   <div id="game-board">
