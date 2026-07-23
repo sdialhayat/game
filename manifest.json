@@ -1,0 +1,22 @@
+{
+  "name": "Game Matematika 2 Player",
+  "short_name": "Math 2P",
+  "description": "Game cerdas cermat matematika untuk anak-anak.",
+  "start_url": "./index.html",
+  "display": "fullscreen",
+  "background_color": "#26543b",
+  "theme_color": "#26543b",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

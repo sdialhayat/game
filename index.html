@@ -351,6 +351,13 @@
     .btn-play { font-size: 18px; padding: 10px 30px; }
   }
 </style>
+
+
+<!-- PWA Meta Tags -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#26543b">
+<link rel="apple-touch-icon" href="icons/icon-192x192.png">
+
 </head>
 <body>
 
@@ -604,7 +611,7 @@
     }
   }
 
-  function endGame() {
+function endGame() {
     stopTimer();
     let finalTime = updateTimerDisplay();
     document.getElementById('final-time-text').innerText = finalTime;
@@ -622,6 +629,22 @@
   }
 
   startGame();
+</script> <!-- TAMBAHKAN PENUTUP INI DI SINI -->
+
+<script>
+  // Registrasi Service Worker untuk PWA
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(registration => {
+          console.log('ServiceWorker terdaftar dengan sukses dengan scope: ', registration.scope);
+        })
+        .catch(err => {
+          console.log('Pendaftaran ServiceWorker gagal: ', err);
+        });
+    });
+  }
 </script>
+
 </body>
 </html>
