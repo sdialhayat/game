@@ -347,34 +347,46 @@
 
     .welcome-title { font-size: 30px; }
     .welcome-subtitle { font-size: 18px; }
-    .welcome-text { display: none; } /* Menyembunyikan teks panjang agar tombol muat */
+    .welcome-text { display: none; }
     .btn-play { font-size: 18px; padding: 10px 30px; }
   }
 </style>
 
-
 <!-- PWA Meta Tags -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#26543b">
-<link rel="apple-touch-icon" href="icons/icon-192x192.png">
+<link rel="apple-touch-icon" href="icon-192x192.png">
 
 </head>
 <body>
 
+<!-- Banner Notifikasi Install PWA Khusus -->
+<div id="install-banner" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #4CAF50; color: white; padding: 15px 30px; border-radius: 30px; font-size: 20px; font-weight: bold; z-index: 9999; box-shadow: 0 8px 0 #2e7d32, 0 10px 20px rgba(0,0,0,0.5); cursor: pointer; text-align: center; border: 3px solid white; transition: 0.2s;">
+  📲 Instal Game Ini!
+</div>
+
 <!-- Pesan Peringatan jika dimainkan dengan posisi HP tegak -->
 <div id="rotate-warning">
-  <h1>📴</h1>
+  <h1>📱</h1>
   <h2>Layar Tidak Didukung</h2>
   <p>Silakan putar HP Anda ke mode <strong>Mendatar (Landscape)</strong> untuk bermain.</p>
   <p style="font-size: 14px; font-weight: normal; margin-top: 20px;">*Pastikan fitur Putar Otomatis (Auto-Rotate) di HP Anda menyala.</p>
 </div>
+
 
 <!-- Layar Sambutan (Welcome Screen) -->
 <div id="welcome-screen">
   <h1 class="welcome-title">ALHAYAT PINTAR!</h1>
   <h2 class="welcome-subtitle">Cerdas Cermat Matematika</h2>
   <p class="welcome-text">Halo adik-adik hebat! Mari bermain sambil belajar. Siapkan dirimu, ajak temanmu, dan buktikan siapa yang paling cepat dan tepat dalam berhitung! Ingat, ketelitian lebih penting daripada kecepatan ya.</p>
-  <button class="btn-play" onclick="aktifkanPermainan()">🚀 AYO MULAI! 🚀</button>
+  
+  <!-- Bungkus tombol agar bisa berdampingan/sejajar -->
+  <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; align-items: center;">
+    <button class="btn-play" onclick="aktifkanPermainan()">🚀 AYO MULAI! 🚀</button>
+    
+    <!-- Tombol Instal dipindah ke sini (desain disesuaikan) -->
+    <button id="btn-install" style="display: none; padding: 15px 30px; font-size: 25px; font-weight: bold; background-color: #008CBA; color: white; border: 4px solid #fff; border-radius: 20px; cursor: pointer; box-shadow: 0 8px 0 #005f7a; transition: 0.1s;">📲 Instal Game!</button>
+  </div>
 </div>
 
 <div id="game-board">
@@ -441,6 +453,7 @@
   <button class="restart" onclick="startGame()">Main Lagi</button>
 </div>
 
+<!-- Script Logika Game -->
 <script>
   const totalQuestions = 100;
 
@@ -611,7 +624,7 @@
     }
   }
 
-function endGame() {
+  function endGame() {
     stopTimer();
     let finalTime = updateTimerDisplay();
     document.getElementById('final-time-text').innerText = finalTime;
@@ -629,8 +642,9 @@ function endGame() {
   }
 
   startGame();
-</script> <!-- TAMBAHKAN PENUTUP INI DI SINI -->
+</script>
 
+<!-- Script Registrasi PWA & Install Prompt -->
 <script>
   // Registrasi Service Worker untuk PWA
   if ('serviceWorker' in navigator) {
@@ -644,6 +658,35 @@ function endGame() {
         });
     });
   }
+
+ // LOGIKA UNTUK MEMUNCULKAN NOTIFIKASI INSTALL CUSTOM
+  let deferredPrompt;
+  const btnInstall = document.getElementById('btn-install');
+
+  // Menangkap event bawaan browser agar tidak muncul otomatis
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault(); 
+    deferredPrompt = e; 
+    btnInstall.style.display = 'block'; // Memunculkan tombol di Welcome Screen
+  });
+
+  // Jika tombol instal diklik
+  btnInstall.addEventListener('click', async () => {
+    btnInstall.style.display = 'none'; // Sembunyikan tombol
+    if (deferredPrompt) {
+      deferredPrompt.prompt(); // Munculkan popup dialog dari HP/Laptop
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`Pilihan user: ${outcome}`);
+      deferredPrompt = null; 
+    }
+  });
+
+  // Jika aplikasi sudah berhasil diinstal
+  window.addEventListener('appinstalled', () => {
+    btnInstall.style.display = 'none';
+    deferredPrompt = null;
+    console.log('Aplikasi berhasil diinstal!');
+  });
 </script>
 
 </body>
