@@ -181,12 +181,12 @@
     position: absolute;
     top: 0; left: 0;
     width: 100vw; height: 100vh;
-    background: rgba(38, 84, 59, 0.90); /* Latar hijau buram transparan */
+    background: rgba(38, 84, 59, 0.90); 
     backdrop-filter: blur(10px);
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    z-index: 25; /* Di atas papan permainan, di bawah peringatan rotasi */
+    z-index: 25; 
     text-align: center;
     padding: 20px;
     box-sizing: border-box;
@@ -328,7 +328,9 @@
     .btn-option { font-size: 24px; padding: 10px 18px; border-radius: 10px; box-shadow: 0 4px 0 #9c6f2a;}
     .btn-option:active { transform: translateY(4px); box-shadow: 0 0 0; }
     
-    .btn-next { font-size: 12px; padding: 6px 20px; margin-top: 20px; }
+    /* PERBAIKAN JARAK TOMBOL LEWATI SOAL */
+    .btn-next { font-size: 13px; padding: 8px 25px; margin-top: 35px; } 
+    
     .player-zone:first-child { border-right: 8px solid #5c3a21; }
 
     /* Penyesuaian Ukuran Layar Sambutan di HP */
@@ -340,10 +342,12 @@
   
   /* Penyesuaian ekstra untuk HP layar sangat kecil */
   @media screen and (max-height: 400px) {
-    .question-box { font-size: 28px; margin-bottom: 10px; }
-    .btn-option { font-size: 20px; padding: 8px 15px; }
+    .question-box { font-size: 28px; margin-bottom: 10px; padding: 5px 15px; }
+    .btn-option { font-size: 20px; padding: 8px 15px; box-shadow: 0 3px 0 #9c6f2a;}
     .options { gap: 10px; }
-    .btn-next { margin-top: 10px; }
+    
+    /* PERBAIKAN JARAK TOMBOL LEWATI SOAL (Layar Sangat Sempit) */
+    .btn-next { margin-top: 25px; font-size: 12px; padding: 6px 20px;}
 
     .welcome-title { font-size: 30px; }
     .welcome-subtitle { font-size: 18px; }
@@ -358,7 +362,7 @@
     font-size: 55px;
     font-weight: bold;
     text-shadow: 3px 3px 10px rgba(0,0,0,0.6), -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
-    pointer-events: none; /* Agar tidak menghalangi klik */
+    pointer-events: none; 
     z-index: 100;
     animation: melayang 1s ease-out forwards;
     text-align: center;
@@ -370,8 +374,6 @@
     80% { transform: translateY(-80px) scale(1); opacity: 1; }
     100% { transform: translateY(-120px) scale(0.8); opacity: 0; }
   }
-  
-  
   
 </style>
 
@@ -396,18 +398,14 @@
   <p style="font-size: 14px; font-weight: normal; margin-top: 20px;">*Pastikan fitur Putar Otomatis (Auto-Rotate) di HP Anda menyala.</p>
 </div>
 
-
 <!-- Layar Sambutan (Welcome Screen) -->
 <div id="welcome-screen">
   <h1 class="welcome-title">ALHAYAT PINTAR!</h1>
   <h2 class="welcome-subtitle">Cerdas Cermat Matematika</h2>
   <p class="welcome-text">Halo adik-adik hebat! Mari bermain sambil belajar. Siapkan dirimu, ajak temanmu, dan buktikan siapa yang paling cepat dan tepat dalam berhitung! Ingat, ketelitian lebih penting daripada kecepatan ya.</p>
   
-  <!-- Bungkus tombol agar bisa berdampingan/sejajar -->
   <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; align-items: center;">
     <button class="btn-play" onclick="aktifkanPermainan()">🚀 AYO MULAI! 🚀</button>
-    
-    <!-- Tombol Instal dipindah ke sini (desain disesuaikan) -->
     <button id="btn-install" style="display: none; padding: 15px 30px; font-size: 25px; font-weight: bold; background-color: #008CBA; color: white; border: 4px solid #fff; border-radius: 20px; cursor: pointer; box-shadow: 0 8px 0 #005f7a; transition: 0.1s;">📲 Instal Game!</button>
   </div>
 </div>
@@ -453,7 +451,6 @@
   </div>
   <button class="btn-tutup" onclick="tutupSkor()">Tutup & Lanjut Main</button>
 </div>
-
 
 <!-- Popup Hasil Akhir -->
 <div id="result-screen" class="modal-screen">
@@ -551,7 +548,6 @@
     document.getElementById('p1-skip').style.display = 'block';
     document.getElementById('p2-skip').style.display = 'block';
     
-    // Tampilkan Layar Sambutan dan buramkan papan
     document.getElementById('welcome-screen').style.display = 'flex';
     document.getElementById('p1-zone').classList.add('belum-mulai');
     document.getElementById('p2-zone').classList.add('belum-mulai');
@@ -567,13 +563,9 @@
   }
 
   function aktifkanPermainan() {
-    // Sembunyikan Layar Sambutan saat tombol mulai diklik
     document.getElementById('welcome-screen').style.display = 'none';
-    
-    // Hilangkan efek buram pada papan
     document.getElementById('p1-zone').classList.remove('belum-mulai');
     document.getElementById('p2-zone').classList.remove('belum-mulai');
-    
     startTimer();
   }
 
@@ -604,30 +596,24 @@
     });
   }
   
-  
   function munculkanNotifLucu(player, isCorrect) {
-    // Tentukan area pemain mana yang diklik
     let zone = document.getElementById(player === 1 ? 'p1-zone' : 'p2-zone');
     
-    // Buat elemen teks baru
     let notif = document.createElement('div');
     notif.className = 'notif-lucu';
     
-    // Daftar kata-kata lucu
     if (isCorrect) {
       const pesanBenar = ["🤩 Yeyyy!", "🔥 Mantul!", "🎉 Gacor!", "😎 Jenius!", "🚀 Wuzzz!"];
       notif.innerText = pesanBenar[Math.floor(Math.random() * pesanBenar.length)];
-      notif.style.color = "#4CAF50"; // Warna hijau
+      notif.style.color = "#4CAF50"; 
     } else {
       const pesanSalah = ["🙈 Waduh!", "🤪 Ngawur!", "😅 Hayoloh!", "🥴 Yhaa..", "💨 Meleset!"];
       notif.innerText = pesanSalah[Math.floor(Math.random() * pesanSalah.length)];
-      notif.style.color = "#ff4d4d"; // Warna merah
+      notif.style.color = "#ff4d4d"; 
     }
 
-    // Masukkan ke dalam area pemain
     zone.appendChild(notif);
 
-    // Hapus elemen setelah 1 detik (sesuai durasi animasi)
     setTimeout(() => {
       notif.remove();
     }, 1000);
@@ -637,10 +623,8 @@ function checkAnswer(player, selected, correct) {
     let pData = player === 1 ? p1 : p2;
     let isCorrect = (selected === correct);
     
-    // Panggil efek animasi lucu melayang
     munculkanNotifLucu(player, isCorrect);
     
-    // Cek apakah jawaban benar atau salah dan catat skornya
     if (isCorrect) {
       pData.score += 10;
       pData.correct++;
@@ -649,7 +633,6 @@ function checkAnswer(player, selected, correct) {
       pData.wrong++;
     }
     
-    // Apapun jawabannya (benar/salah), langsung ganti ke soal berikutnya
     pData.index++; 
     loadQuestion(player);
   }
@@ -663,16 +646,13 @@ function checkAnswer(player, selected, correct) {
   }
 
 function tampilkanSkorSaatIni() {
-    // Hitung total soal yang sudah dijawab
     let p1Dijawab = p1.correct + p1.wrong;
     let p2Dijawab = p2.correct + p2.wrong;
 
-    // Tampilkan untuk Player 1
     document.getElementById('cur-p1-dijawab').innerText = p1Dijawab;
     document.getElementById('cur-p1-benar').innerText = p1.correct;
     document.getElementById('cur-p1-salah').innerText = p1.wrong;
 
-    // Tampilkan untuk Player 2
     document.getElementById('cur-p2-dijawab').innerText = p2Dijawab;
     document.getElementById('cur-p2-benar').innerText = p2.correct;
     document.getElementById('cur-p2-salah').innerText = p2.wrong;
@@ -701,12 +681,10 @@ function endGame() {
     let p1Dijawab = p1.correct + p1.wrong;
     let p2Dijawab = p2.correct + p2.wrong;
 
-    // Final Player 1
     document.getElementById('p1-dijawab').innerText = p1Dijawab;
     document.getElementById('p1-benar').innerText = p1.correct;
     document.getElementById('p1-salah').innerText = p1.wrong;
 
-    // Final Player 2
     document.getElementById('p2-dijawab').innerText = p2Dijawab;
     document.getElementById('p2-benar').innerText = p2.correct;
     document.getElementById('p2-salah').innerText = p2.wrong;
@@ -717,7 +695,6 @@ function endGame() {
 
 <!-- Script Registrasi PWA & Install Prompt -->
 <script>
-  // Registrasi Service Worker untuk PWA
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js')
@@ -730,29 +707,25 @@ function endGame() {
     });
   }
 
- // LOGIKA UNTUK MEMUNCULKAN NOTIFIKASI INSTALL CUSTOM
   let deferredPrompt;
   const btnInstall = document.getElementById('btn-install');
 
-  // Menangkap event bawaan browser agar tidak muncul otomatis
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault(); 
     deferredPrompt = e; 
-    btnInstall.style.display = 'block'; // Memunculkan tombol di Welcome Screen
+    btnInstall.style.display = 'block'; 
   });
 
-  // Jika tombol instal diklik
   btnInstall.addEventListener('click', async () => {
-    btnInstall.style.display = 'none'; // Sembunyikan tombol
+    btnInstall.style.display = 'none'; 
     if (deferredPrompt) {
-      deferredPrompt.prompt(); // Munculkan popup dialog dari HP/Laptop
+      deferredPrompt.prompt(); 
       const { outcome } = await deferredPrompt.userChoice;
       console.log(`Pilihan user: ${outcome}`);
       deferredPrompt = null; 
     }
   });
 
-  // Jika aplikasi sudah berhasil diinstal
   window.addEventListener('appinstalled', () => {
     btnInstall.style.display = 'none';
     deferredPrompt = null;
