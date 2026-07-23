@@ -27,34 +27,88 @@
     align-items: center; 
     justify-content: center; 
     position: relative; 
+    transition: 0.3s; /* Animasi transisi saat blur hilang */
   }
   
   .player-zone:first-child { 
     border-right: 15px solid #5c3a21; 
   } 
 
-  /* Desain Tombol Lihat Skor di Tengah Atas */
-  #btn-lihat-skor {
+  /* Efek Blur sebelum game dimulai */
+  .belum-mulai {
+    filter: blur(8px);
+    pointer-events: none; /* Mencegah pemain mengklik tombol apa pun */
+  }
+
+  /* --- WADAH UNTUK TIMER DAN TOMBOL SKOR --- */
+  #top-center-container {
     position: absolute;
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 5;
-    font-size: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  #timer-display {
+    font-size: 28px;
+    font-weight: bold;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 10px 25px;
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    letter-spacing: 2px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  }
+
+  #btn-lihat-skor {
+    font-size: 18px;
     font-weight: bold;
     background: #e09f3e;
-    padding: 10px 30px;
-    border-radius: 10px;
+    padding: 8px 25px;
+    border-radius: 8px;
     color: #333;
     border: none;
     cursor: pointer;
-    box-shadow: 0 5px 0 #9c6f2a;
+    box-shadow: 0 4px 0 #9c6f2a;
     transition: 0.1s;
   }
   #btn-lihat-skor:active {
-    transform: translate(-50%, 5px);
+    transform: translateY(4px);
     box-shadow: 0 0 0;
   }
+
+  /* --- DESAIN TOMBOL MULAI DI BAWAH --- */
+  #btn-mulai-container {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+  }
+  #btn-mulai {
+    padding: 15px 60px;
+    font-size: 30px;
+    font-weight: bold;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    box-shadow: 0 8px 0 #2e7d32, 0 15px 20px rgba(0,0,0,0.3);
+    transition: 0.1s;
+    letter-spacing: 2px;
+  }
+  #btn-mulai:active {
+    transform: translateY(8px);
+    box-shadow: 0 0 0;
+  }
+  /* ------------------------------------- */
 
   .question-box { 
     font-size: 70px; 
@@ -93,19 +147,32 @@
 
   .btn-next { 
     margin-top: 50px; 
-    padding: 10px 30px; 
-    font-size: 20px; 
+    padding: 12px 35px; 
+    font-size: 18px; 
+    font-weight: 600;
+    letter-spacing: 1px;
     cursor: pointer; 
-    background: #444; 
+    background: rgba(255, 255, 255, 0.1); 
     color: white; 
-    border: none; 
-    border-radius: 8px; 
-  }
-  .btn-next:hover {
-    background: #555;
+    border: 2px solid rgba(255, 255, 255, 0.5); 
+    border-radius: 30px; 
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease; 
   }
 
-  /* Desain Jendela Popup Skor & Hasil Akhir */
+  .btn-next:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: #fff;
+    transform: translateY(-3px); 
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  }
+
+  .btn-next:active {
+    transform: translateY(1px); 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+
   .modal-screen { 
     display: none; 
     position: absolute; 
@@ -115,7 +182,7 @@
     flex-direction: column; 
     align-items: center; 
     justify-content: center; 
-    z-index: 10; 
+    z-index: 30; 
     text-align: center; 
   }
   .result-card { 
@@ -144,7 +211,7 @@
     font-weight: bold;
   }
   button.restart { 
-    margin-top: 40px; 
+    margin-top: 30px; 
     padding: 15px 40px; 
     font-size: 24px; 
     cursor: pointer; 
@@ -154,22 +221,39 @@
     border-radius: 10px; 
     font-weight: bold;
   }
+  
+  #waktu-akhir-display {
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 20px;
+    background: #333;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 1px solid #666;
+  }
 </style>
 </head>
 <body>
 
 <div id="game-board">
-  <!-- Tombol Satu Skor di Tengah -->
-  <button id="btn-lihat-skor" onclick="tampilkanSkorSaatIni()">Lihat Skor</button>
+  
+  <!-- Container untuk Waktu & Tombol Lihat Skor -->
+  <div id="top-center-container">
+    <div id="timer-display">00:00:00</div>
+    <button id="btn-lihat-skor" onclick="tampilkanSkorSaatIni()">Lihat Skor</button>
+  </div>
 
-  <!-- Area Player 1 -->
+  <!-- Tombol Mulai di Bawah -->
+  <div id="btn-mulai-container">
+    <button id="btn-mulai" onclick="aktifkanPermainan()">MULAI</button>
+  </div>
+
   <div class="player-zone" id="p1-zone">
     <div class="question-box" id="p1-q">Soal</div>
     <div class="options" id="p1-options"></div>
     <button class="btn-next" id="p1-skip" onclick="skipQuestion(1)">Lewati Soal >></button>
   </div>
 
-  <!-- Area Player 2 -->
   <div class="player-zone" id="p2-zone">
     <div class="question-box" id="p2-q">Soal</div>
     <div class="options" id="p2-options"></div>
@@ -177,7 +261,6 @@
   </div>
 </div>
 
-<!-- Jendela Popup Untuk "Lihat Skor" di tengah permainan -->
 <div id="skor-sementara-screen" class="modal-screen">
   <h1 style="color: #e09f3e; font-size: 50px; margin-bottom: 30px;">SKOR SEMENTARA</h1>
   <div class="results-container">
@@ -197,9 +280,10 @@
   <button class="btn-tutup" onclick="tutupSkor()">Tutup & Lanjut Main</button>
 </div>
 
-<!-- Layar Hasil Akhir (Muncul saat 100 soal selesai) -->
 <div id="result-screen" class="modal-screen">
-  <h1 style="color: #e09f3e; font-size: 60px; margin-bottom: 40px;">PERMAINAN SELESAI</h1>
+  <h1 style="color: #e09f3e; font-size: 60px; margin-bottom: 10px;">PERMAINAN SELESAI</h1>
+  <div id="waktu-akhir-display">Total Waktu: <span id="final-time-text">00:00:00</span></div>
+  
   <div class="results-container">
     <div class="result-card">
       <h2 style="font-size: 30px; margin-top: 0;">Player 1</h2>
@@ -223,6 +307,42 @@
   let p1 = { score: 0, correct: 0, wrong: 0, index: 0, questions: [] };
   let p2 = { score: 0, correct: 0, wrong: 0, index: 0, questions: [] };
 
+  // Variabel Timer
+  let timerInterval;
+  let seconds = 0;
+  let minutes = 0;
+  let hours = 0;
+
+  function updateTimerDisplay() {
+    let s = seconds < 10 ? "0" + seconds : seconds;
+    let m = minutes < 10 ? "0" + minutes : minutes;
+    let h = hours < 10 ? "0" + hours : hours;
+    
+    let timeString = `${h}:${m}:${s}`;
+    document.getElementById('timer-display').innerText = timeString;
+    return timeString; 
+  }
+
+  function startTimer() {
+    clearInterval(timerInterval); 
+    timerInterval = setInterval(() => {
+      seconds++;
+      if (seconds >= 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes >= 60) {
+          minutes = 0;
+          hours++;
+        }
+      }
+      updateTimerDisplay();
+    }, 1000);
+  }
+
+  function stopTimer() {
+    clearInterval(timerInterval);
+  }
+
   function generateQuestions() {
     let masterQuestions = []; 
     
@@ -245,6 +365,7 @@
     p2.questions = [...masterQuestions].sort(() => Math.random() - 0.5);
   }
 
+  // Persiapan awal saat layar dimuat
   function startGame() {
     p1 = { score: 0, correct: 0, wrong: 0, index: 0, questions: [] };
     p2 = { score: 0, correct: 0, wrong: 0, index: 0, questions: [] };
@@ -258,11 +379,35 @@
     document.getElementById('p1-skip').style.display = 'block';
     document.getElementById('p2-skip').style.display = 'block';
     
+    // Tampilkan tombol Mulai dan buramkan arena pemain
+    document.getElementById('btn-mulai-container').style.display = 'block';
+    document.getElementById('p1-zone').classList.add('belum-mulai');
+    document.getElementById('p2-zone').classList.add('belum-mulai');
+
+    // Reset dan Hentikan Timer
+    stopTimer();
+    seconds = 0; minutes = 0; hours = 0;
+    updateTimerDisplay();
+    
     generateQuestions();
     
     loadQuestion(1);
     loadQuestion(2);
   }
+
+  // --- Fungsi yang berjalan saat Tombol MULAI diklik ---
+  function aktifkanPermainan() {
+    // Sembunyikan tombol mulai
+    document.getElementById('btn-mulai-container').style.display = 'none';
+    
+    // Hilangkan efek buram
+    document.getElementById('p1-zone').classList.remove('belum-mulai');
+    document.getElementById('p2-zone').classList.remove('belum-mulai');
+    
+    // Mulai waktu
+    startTimer();
+  }
+  // -----------------------------------------------------
 
   function loadQuestion(player) {
     let pData = player === 1 ? p1 : p2;
@@ -314,9 +459,7 @@
     }
   }
 
-  // --- Fungsi Baru: Menampilkan & Menutup Skor di Tengah Permainan ---
   function tampilkanSkorSaatIni() {
-    // Isi data ke popup sementara
     document.getElementById('cur-p1-benar').innerText = p1.correct;
     document.getElementById('cur-p1-salah').innerText = p1.wrong;
     document.getElementById('cur-p1-skor').innerText = p1.score;
@@ -325,15 +468,12 @@
     document.getElementById('cur-p2-salah').innerText = p2.wrong;
     document.getElementById('cur-p2-skor').innerText = p2.score;
 
-    // Tampilkan popup
     document.getElementById('skor-sementara-screen').style.display = 'flex';
   }
 
   function tutupSkor() {
-    // Sembunyikan popup
     document.getElementById('skor-sementara-screen').style.display = 'none';
   }
-  // ---------------------------------------------------------------------
 
   function checkGameEnd() {
     if (p1.index >= totalQuestions && p2.index >= totalQuestions) {
@@ -342,7 +482,12 @@
   }
 
   function endGame() {
+    stopTimer();
+    let finalTime = updateTimerDisplay();
+    document.getElementById('final-time-text').innerText = finalTime;
+
     document.getElementById('game-board').style.display = 'none';
+    document.getElementById('btn-mulai-container').style.display = 'none';
     document.getElementById('result-screen').style.display = 'flex';
 
     document.getElementById('p1-benar').innerText = p1.correct;
